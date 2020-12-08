@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
-const Schema = mogoose.Schema
+const Schema = mongoose.Schema
 
 
 const userSchema = new Schema({
-    userName: {
+    username: {
         type: String,
         required: true
     },
-    lastName: {
+    name: {
         type: String,
         default: 'public'
     },
@@ -19,6 +19,16 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    memberSince: {
+        type: Date,
+        default: Date.now()
+    },
+    lastSeen: {
+        type: Date
+    },
+    profilePicture: {
+        type: String,
+    }
 }, { timestamps: true })
 
 

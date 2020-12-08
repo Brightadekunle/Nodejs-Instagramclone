@@ -1,0 +1,19 @@
+<% if (typeof errors != "undefined") { %>
+    <% errors.forEach(error => { %>
+        <div class="alert alert-warning alert-dismissible">
+            <%= error.msg %>
+        </div>
+    <% }) %>
+<% } %>
+
+<% if (success_msg != "") { %>
+    <div class="alert alert-success alert-dismissible">
+        <%= success_msg %>
+    </div>
+<% } %>
+
+<% if (error != "") { %>
+    <div class="alert alert-warning alert-dismissible">
+        <%= error %>
+    </div>
+<% } %>

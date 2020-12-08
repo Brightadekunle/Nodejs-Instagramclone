@@ -1,40 +1,34 @@
-{% extends 'base.html' %} {% block content %} {% from "_formhelpers.html" import
-render_field %}
-<!-- <h2 class="reg">Register</h2> -->
+<%- include('../partials/nav.ejs') %>
+<div class="row" style="display: flex; align-items: center; justify-content: center;">
+    <div class="col-md-4 col-md-offset-4">
+        <h1>Sign Up</h1>
+        <!-- Validation Errors -->
+        <%- include('../partials/messages.ejs') %>
+        <form action="/signup" method="POST">
+            <div class="form-group">
+                <label for="email">Name</label>
+                <input type="text" class="form-control" name="name" id="name" value="<%= typeof name != 'undefined' ? name : '' %>">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" class="form-control" name="email" id="email" value="<%= typeof email != 'undefined' ? email : '' %>">
+          </div>
+          <div class="form-group">
+            <label for="email">Username</label>
+            <input type="text" class="form-control" name="username" id="username" value="<%= typeof username != 'undefined' ? username : '' %>">
+        </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" name="password" id="password" value="<%= typeof password != 'undefined' ? password : '' %>">
+            </div>
+            <div class="form-group">
+              <label for="password">Password2</label>
+              <input type="password" class="form-control" name="password2" id="password2">
+          </div>
+            <input type="hidden" name="_csrf" value="">
+            <button style="width: 100%;" type="submit" class="btn btn-primary">Sign Up</button>
+  
+        </form>
+    </div>
 
-<div class="row mt-4">
-  <form
-    action="{{url_for('auth.register')}}"
-    method="POST"
-    enctype="multipart/form-data"
-  >
-    {{form.csrf_token}}
-    <fieldset class="form-group">
-      <div>
-        {{ render_field(form.name, class='form-control') }} {{
-        render_field(form.username, class='form-control') }} {{
-        render_field(form.email, class='form-control') }} {{
-        render_field(form.password, class='form-control') }} {{
-        render_field(form.confirm_password, class='form-control') }}
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary">Register</button>
-      </div>
-    </fieldset>
-  </form>
 </div>
-
-<style>
-  .row {
-    margin-left: 300px;
-  }
-
-  button {
-    width: 300px;
-  }
-  label {
-    font-weight: bolder;
-  }
-</style>
-
-{% endblock content %}
