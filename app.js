@@ -33,7 +33,7 @@ app.use(session({
     saveUninitialized: false
 }))
 
-
+// git remote add origin https://github.com/Brightadekunle/Nodejs-Instagramclone.git
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
