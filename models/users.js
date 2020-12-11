@@ -28,6 +28,10 @@ const userSchema = new Schema({
     },
     profilePicture: {
         type: String,
+    },
+    resetLink: {
+        type: String,
+        default: ''
     }
 }, { timestamps: true })
 
