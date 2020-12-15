@@ -3,9 +3,9 @@ const router = express.Router()
 
 const indexController = require('../controllers/index')
 
-
-router.route('/home')
+router.route('/')
     .get(indexController.getHomePage)
+
 
 
 module.exports = router

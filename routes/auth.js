@@ -1,5 +1,4 @@
 const express = require('express')
-const { getForgortPassword } = require('../controllers/auth')
 const router = express.Router()
 
 const authController = require('../controllers/auth')

@@ -102,7 +102,7 @@ const postForgotPassword = (req, res, next) => {
         .then(user => {
             if (!user){
                 errors.push({ msg: "Email does not exist" })
-                res.render('auth/reset_password_request', { title: "forgot-password", errors })
+                res.render('auth/reset_password_request', { title: "forgot-password", errors, success_msg: req.flash('success_message') })
             } 
             const token = jwt.sign({ _id: user._id }, process.env.RESET_PASSWORD_KEY, {  expiresIn: '20m'})
             const data = {
