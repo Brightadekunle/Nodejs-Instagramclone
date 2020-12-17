@@ -50,8 +50,8 @@ const userRoutes = require('./routes/user')
 const indexRoutes = require('./routes/index')
 
 app.use('/', authRoutes)
-app.use('/user', userRoutes)
 app.use('/', indexRoutes)
+app.use('/user', userRoutes)
 
 
 const PORT = process.env.PORT

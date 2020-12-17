@@ -1,12 +1,4 @@
-{% extends 'base.html' %}
-{% include 'navbar.html' %}
-
-{% block content %}
-{% from "_formhelpers.html" import render_field %}
-
-{{ moment.include_jquery() }}
-{{ moment.include_moment() }}
-
+<%- include('../partials/nav.ejs') %>
 <div>
       <div class="media">
         <img class="account-img" src="{{image_file}}">
@@ -100,7 +92,3 @@
     }
   </style>
 
-
-
-
-{% endblock content %}
