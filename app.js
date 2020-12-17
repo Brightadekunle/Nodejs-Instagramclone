@@ -46,11 +46,9 @@ app.use((req, res, next) => {
 
 
 const authRoutes = require('./routes/auth')
-const userRoutes = require('./routes/user')
 const indexRoutes = require('./routes/index')
 
 app.use('/', authRoutes)
-app.use('/user', userRoutes)
 app.use('/', indexRoutes)
 
 
