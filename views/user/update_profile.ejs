@@ -1,22 +1,22 @@
-{% extends 'base.html' %} {% include 'navbar.html' %} {% block content %} {%
-from "_formhelpers.html" import render_field %}
-<form
-  method="POST"
-  action="{{url_for('main.update_account', id=user.id)}}"
-  enctype="multipart/form-data"
->
-  <fieldset class="form-group">
+<%- include('../partials/nav.ejs') %>
+
+<div class="container col-md-4 col-md-offset-4">
+  <%- include('../partials/messages.ejs') %>
+  <input type="hidden" name="usernameValue" value="<%= user.username %>">
+  <form method="POST" action="/update/<%= user.username %>" enctype="multipart/form-data">
     <div class="form-group">
-      {{ render_field(form.username, class='form-control') }} {{
-      render_field(form.email, class='form-control') }}
+      <label for="username">Username</label>
+      <input type="text" class="form-control" name="username" id="username" value="<%= user.username %>">
     </div>
     <div class="form-group">
-      {{ render_field(form.profile_picture, class="form-control-file") }}
-    </div>
+      <label for="email">Email</label>
+      <input type="text" class="form-control" name="email" id="email" value="<%= user.email %>">
+  </div>
     <div class="form-group">
-      <button type="submit" class="btn btn-primary">Update</button>
-    </div>
-  </fieldset>
+      <label for="email">Profile picture</label>
+      <input type="file" class="form-control-file" name="profilePicture" accept="image/*">
+  </div>
+  <input value="Update" type="submit" class="btn btn-primary">
 </form>
 
 <style>
@@ -25,4 +25,4 @@ from "_formhelpers.html" import render_field %}
   }
 </style>
 
-{% endblock content %}
+</div>

@@ -7,8 +7,9 @@ const morgan = require('morgan')
 const session = require('cookie-session')
 const flash = require('connect-flash')
 const passport = require('passport')
+const fileUpload = require('express-fileupload')
 const initializePassport = require('./config/passport')
-
+const path = require('path')
 
 
 const app = express()
@@ -20,12 +21,14 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(result => console.log("MongoDB connected..."))
     .catch(err => console.log(err))
 
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use(expressLayouts)
 app.set("view engine", "ejs")
-
+app.use('/public', express.static(__dirname + "/public"))
 app.use(morgan('dev'))
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+
+
 app.use(session({
     secret: "secret",
     cookie: { maxAge: 60000 },
@@ -38,8 +41,14 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 
-app.use((req, res, next) => {
+// File upload middleware
+app.use(fileUpload())
+
+
+app.use(function (req, res, next) {
+    res.locals.login = req.isAuthenticated()
     res.locals.error = req.flash('error')
+    res.locals.logginUser = req.user
     next()
 })
 
@@ -51,7 +60,7 @@ const indexRoutes = require('./routes/index')
 
 app.use('/', authRoutes)
 app.use('/', indexRoutes)
-app.use('/user', userRoutes)
+app.use('/', userRoutes)
 
 
 const PORT = process.env.PORT

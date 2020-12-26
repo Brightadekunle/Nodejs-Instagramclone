@@ -20,6 +20,23 @@ router.route('/reset-password/:token')
     .get(authController.getResetPassword)
     .post(authController.postResetPassword)
 
+router.route('/logout')
+    .get(isLoggedIn, authController.userLogout)
 
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()){
+        return next()    
+    }
+    req.flash('error_message', 'Please log in to view this resource')
+    res.redirect('/signin')
+}
+
+function notLoggedIn(req, res, next) {
+    if (!req.isAuthenticated()){
+        return next()    
+    }
+    req.flash('error_message', 'Please log in to view this resource')
+    res.redirect('/')
+}
 
 module.exports = router

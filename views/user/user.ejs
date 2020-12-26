@@ -1,57 +1,67 @@
 <%- include('../partials/nav.ejs') %>
-<div>
+<div class="container">
+      <%- include('../partials/messages.ejs') %>
       <div class="media">
-        <img class="account-img" src="{{image_file}}">
-        <div class="media-body">
+          <% if (user != null) { %>
+          <img class="account-img" src="<%= user.profilePicture %>">
           
-          <h2 class="account-heading">{{user.username}} 
-            {% if current_user != user %}
-              {% if not current_user.is_following(user) %}
-                <span><a class="btn btn-primary" href="{{url_for('main.follow', username=user.username)}}">Follow</a></span>
-              {% else %}
-                <span><a class="btn btn-primary" href="{{url_for('main.unfollow', username=user.username)}}">Unfollow</a></span>
-              {% endif %}
-            {% else %}
+        <div class="media-body">
+          <h2 class="account-heading"><%= user.username %>
+                <% if (logginUser.toString() != user.toString() && !logginUser.isFollowing(user)) { %>
+                  <span><a href="/follow/<%= user.username %>" class="btn btn-primary">Follow</a></span>    
+                <% } else if (logginUser.toString() != user.toString() && logginUser.isFollowing(user)) { %>
+                  <span><a href="/unfollow/<%= user.username %>" class="btn btn-primary">Unfollow</a></span>    
+                <% } %>
+               
+            <% if (logginUser.toString() == user.toString()) { %>
             <button style="padding: 10px; border: 0;" data-toggle="modal" data-target="#exampleModal" class="btn btn-secondary">New post</button>
-            {% endif %}
+            <% } else { %>
+              <% } %>
           </h2>
-            <p>Member since <strong>{{ moment(user.member_since).format('L') }}.</strong> Last seen <strong>{{ moment(user.last_seen).fromNow() }}.</strong></p>
+            <% let createdAt = new Date(user.createdAt) %>
+            <% let date = createdAt.getDate() + ""; %>
+            <% let lastSeen = new Date(user.lastSeen) %>
+            <% let lastSeenDate = lastSeen.getDate() + ""; %>
+            <% if (logginUser.toString() != user.toString()) { %>
+              <p>Member since <strong><%= date.padStart(2, "0") + " " + months[createdAt.getMonth()] + ", " +createdAt.getFullYear() %>.</strong> Last seen <strong><%= user.lastSeen %></strong></p>
+            <% } else { %>  
+              <p>Member since <strong><%= date.padStart(2, "0") + " " + months[createdAt.getMonth()] + ", " +createdAt.getFullYear() %>.</p>
+            <% } %>
           <p>
-            <a href="#">Posts: <span class="badge">{{user.posts.count()}}</span></a>
-            <a href="{{url_for('main.followers', username=user.username)}}">Followers: <span class="badge">{{user.followers.count() - 1}}</span></a>
-            <a href="{{url_for('main.followed_by', username=user.username)}}">Following: <span class="badge">{{user.followed.count() - 1}}</span></a>
+            <a href="#">Posts: <span class="badge"></span></a>
+            <a href="">Followers: <span class="badge"></span></a>
+            <a href="">Following: <span class="badge"></span></a>
         </p>
         <p>
-          {% if current_user %}
-            <span><a class="btn btn-primary" href="{{url_for('main.update_account', id=user.id)}}">Update</a></span>
-            {% endif %}
+          <% if (logginUser.toString() == user.toString()) { %>
+            <span><a class="btn btn-primary" href="/update/<%= logginUser.username %>">Update</a></span>
+          <% } else { %>
+            <% } %>
         </p>
         </div>
       </div>
-
-
           <div class="album py-5 bg-light">
             <div class="container">
               <div class="row">
-                {% for post in image_posts %}
-                <div class="col-md-4">
-                  <div class="card mb-4 shadow-sm">
-                    <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="{{post}}" preserveAspectRatio="xMidYMid slice"></img>
-                    
+                <% user.posts.forEach(post => { %>
+                  <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                      <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="<%= post %>" preserveAspectRatio="xMidYMid slice"></img>
+                    </div>
                   </div>
-                </div>
-                {% endfor %}
+                <% }) %>
               </div>
             </div>
+            <% } %>
           </div>
 </div>
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-</button>
+<!-- <button type="" class="" data-toggle="modal" data-target="#exampleModal">
+</button> -->
 
 <!-- Modal -->
-<form action="{{url_for('main.account', username=user.username)}}" method="POST" enctype="multipart/form-data">
+<form action="/upload" method="POST" enctype="multipart/form-data">
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -63,8 +73,14 @@
       </div>
       <div class="modal-body">
         <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Choose file</button> -->
-        {{ render_field(form.image_post, class="form-control-file") }}
-        {{ render_field(form.caption, class="form-control") }}
+        <div class="form-group">
+          <label for="">Picture</label>
+          <input type="file" class="form-control-file" name="post" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label for="">Caption</label>
+        <textarea type="text" class="form-control" name="caption"></textarea>
+      </div>
       </div>
       <div class="modal-footer form-group">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -73,6 +89,9 @@
     </div>
   </div>
 </div>
+<% if (user != null) { %>
+  <input type="hidden" class="form-control" id="user-name" value="<%= user.username %>">
+<% } %>
 </form>
 
   <style>
@@ -91,4 +110,3 @@
       margin-top: 35px;
     }
   </style>
-
