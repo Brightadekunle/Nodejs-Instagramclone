@@ -4,6 +4,9 @@ const router = express.Router()
 const userControllers = require('../controllers/user')
 const { isAuthenticated } = require('../config/customFunctions')
 
+router.route('/notifications')
+    .get(isLoggedIn, userControllers.getNotification)
+
 router.route('/:username')
     .get(isLoggedIn, userControllers.getProfilePage)
 
@@ -18,22 +21,21 @@ router.route('/unfollow/:username')
     .get(isLoggedIn, userControllers.unfollowUser)
 
 router.route('/upload')
-    .post(userControllers.postUpload)
+    .post(isLoggedIn, userControllers.postUpload)
 
 router.route('/like/:postId')
-    .get(userControllers.likePost)
+    .get(isLoggedIn, userControllers.likePost)
 
 router.route('/unlike/:postId')
-    .get(userControllers.unlikePost)
+    .get(isLoggedIn, userControllers.unlikePost)
 
 router.route('/comment/:postId')
-    .post(userControllers.commentPost)
+    .post(isLoggedIn, userControllers.commentPost)
 
 router.route('/reply/:commentId')
-    .post(userControllers.replyComment)
+    .post(isLoggedIn, userControllers.replyComment)
 
-router.route('/notifications')
-    .get(userControllers.getNotification)
+
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()){

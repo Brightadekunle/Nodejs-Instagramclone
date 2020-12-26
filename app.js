@@ -31,9 +31,13 @@ app.use(morgan('dev'))
 
 app.use(session({
     secret: "secret",
-    cookie: { maxAge: 60000 },
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secureProxy: true,
+        httpOnly: true,
+        domain: 'cookie.com',
+    }
 }))
 
 // git remote add origin https://github.com/Brightadekunle/Nodejs-Instagramclone.git
@@ -49,6 +53,11 @@ app.use(function (req, res, next) {
     res.locals.login = req.isAuthenticated()
     res.locals.error = req.flash('error')
     res.locals.logginUser = req.user
+    next()
+})
+
+app.use(function (req, res, next) {
+    res.locals.session = req.session;
     next()
 })
 
