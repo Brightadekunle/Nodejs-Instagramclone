@@ -1,9 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Notification = require('./notification')
-
-
 const userSchema = new Schema({
     username: {
         type: String,
@@ -49,7 +46,8 @@ const userSchema = new Schema({
         type: String,
     }],
     notifications: [{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification"
     }],
     lastNotificationReadTime: {
         type: Date
@@ -78,21 +76,5 @@ userSchema.methods.hasLiked = function (post, callback) {
     return false
 }
 
-userSchema.methods.newNotification = async (callback) => {
-    const user = this
-    const lastReadTime = user.lastNotificationReadTime
-    let newNotifications = []
-    let notifications = await Notification.find({ user: user._id })
-    notifications.forEach(notification => {
-        if (notification.createdAt > lastReadTime){
-            newNotifications.push(notification)
-        }
-    })
-    if (newNotifications.length == 0){
-        return null
-    } else {
-        return newNotifications.length()
-    }
-}
 
 module.exports = mongoose.model('User', userSchema)

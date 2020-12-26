@@ -7,9 +7,11 @@ const Post = require('../models/post')
 const Comment = require('../models/comment')
 const Notification = require('../models/notification')
 
+
 const getProfilePage = (req, res, next)=> {
     const success_msg = req.flash('success_message')
     const error_msg = req.flash('error_message')
+    req.session.notificationLength = null;
     User.findOne({ username: req.params.username })
         .populate('post')
         .then(user => {
@@ -113,7 +115,6 @@ const postUpload = (req, res, next) => {
                         user.posts.push(savedPost.file)
                         user.save()
                             .then(savedUser => {
-                                console.log(savedUser)
                                 req.flash('success_message', "Post uploaded successfully!.")
                                 res.redirect(`/${req.user.username}`)
                             })
@@ -149,8 +150,11 @@ const followUser = async (req, res, next) => {
                                 })
                                 newNotification.save()
                                     .then(savedNotification => {
-                                        console.log(savedNotification)
-                                        res.redirect(`/${user.username}`)
+                                        followedUser.notifications.push(savedNotification._id)
+                                        followedUser.save()
+                                            .then(savedFollowedUser => {
+                                                res.redirect(`/${user.username}`)
+                                            })
                                     })
                                     .catch(err => {
                                         console.log(err)
@@ -222,7 +226,8 @@ const likePost = (req, res, next) => {
                                         })
                                         newNotification.save()
                                             .then(savedNotification => {
-                                                console.log(savedNotification)
+                                                savedUser.notifications.push(savedNotification._id)
+                                                savedUser.save()
                                                 res.redirect('/home')
                                             })
                                             .catch(err => {
@@ -312,7 +317,6 @@ const replyComment = (req, res, next) => {
     if (req.user){
         const commentId = req.params.commentId
         const reply = req.body.reply
-        console.log(reply, commentId)
         Comment.findById({ _id: commentId })
             .then(comment => {  
                 comment.replies.push({
@@ -327,29 +331,33 @@ const replyComment = (req, res, next) => {
                 })
                 comment.save()
                     .then(savedComment => {
-                        console.log(savedComment)
                         res.redirect('/home')
                     })
             })
     }
 }
 
-const getNotification = (req, res, next) => {
-    console.log(req.user)
+const getNotification = async (req, res, next) => {
+    req.session.notificationLength = null;
     if (req.user){
         let user = req.user
-        Notification.find()
-            .then(notifications => {
-                console.log(req.user)
+        User.findOne({ username: user.username })
+            .populate('notifications')
+            .then(user => {
+                console.log(user)
                 user.lastNotificationReadTime = Date.now()
                 user.save()
-                    .then(savedUser => {
-                        res.render('notification', { title: 'Notifications', notifications })
+                    .then(user => {
+                        res.render('notifications', { title: 'Notifications', user, })
+                    })
+                    .catch(err => {
+                        console.log(err)
                     })
             })
+    } else {
+        
     }
 }
-
 
 module.exports = {
     getProfilePage,
