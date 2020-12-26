@@ -1,0 +1,28 @@
+<%- include('../partials/nav.ejs') %>
+
+<div class="container col-md-4 col-md-offset-4">
+  <%- include('../partials/messages.ejs') %>
+  <input type="hidden" name="usernameValue" value="<%= user.username %>">
+  <form method="POST" action="/update/<%= user.username %>" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" class="form-control" name="username" id="username" value="<%= user.username %>">
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="text" class="form-control" name="email" id="email" value="<%= user.email %>">
+  </div>
+    <div class="form-group">
+      <label for="email">Profile picture</label>
+      <input type="file" class="form-control-file" name="profilePicture" accept="image/*">
+  </div>
+  <input value="Update" type="submit" class="btn btn-primary">
+</form>
+
+<style>
+  .form-group {
+    width: 300px;
+  }
+</style>
+
+</div>

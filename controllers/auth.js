@@ -9,7 +9,7 @@ const mg = mailgun({ apiKey: process.env.MAILGUN_APIKEY, domain: DOMAIN })
 const User = require('../models/users')
 
 const userSignupGet = (req, res, next) => {
-    res.render('auth/register', { title: "Register", success_msg: '' })
+    res.render('auth/register', { title: "Register", success_msg: "", error_msg: "" })
 }
 
 const userSignupPost = (req, res, next) => {
@@ -33,7 +33,9 @@ const userSignupPost = (req, res, next) => {
             name: name,
             username: username, 
             email: email,
-            title: "Register"
+            title: "Register",
+            success_msg: "", 
+            error_msg: "" 
 
         })
     } else {
@@ -46,7 +48,9 @@ const userSignupPost = (req, res, next) => {
                         name: name,
                         username: username, 
                         email: email,
-                        title: "Register"
+                        title: "Register",
+                        success_msg: "", 
+                        error_msg: "" 
                     }) 
                 } else {
                     const hash = bcrypt.hashSync(password, bcrypt.genSalt(10, (err) => {
@@ -77,7 +81,9 @@ const userSignupPost = (req, res, next) => {
 
 const userSigninGet = (req, res, next) => {
     const success_msg = req.flash('success_message')
-    res.render('auth/login', { title: "Login", success_msg })
+    const error_msg = req.flash('error_message')
+    const errors = req.flash('error')
+    res.render('auth/login', { title: "Login", success_msg, error_msg, errors})
 }
 
 const userSigninPost = (req, res, next) => {
@@ -85,13 +91,15 @@ const userSigninPost = (req, res, next) => {
         successRedirect: '/home',
         failureRedirect: '/signin',
         failureFlash: true,
+        successFlash: true,
         session: true
     })(req, res, next)
+
 }
 
 const getForgortPassword = (req, res, next) => {
     const success_msg = req.flash('success_message')
-    res.render('auth/reset_password_request', { title: "forgot-password", success_msg })
+    res.render('auth/reset_password_request', { title: "forgot-password", success_msg, error_msg: '' })
 }
 
 const postForgotPassword = (req, res, next) => {
@@ -188,6 +196,19 @@ const postResetPassword = (req, res, next) => {
 
 }
 
+const userLogout = (req, res, next) => {
+    // Logout Handle
+    User.findOneAndUpdate({ username: req.user.username })
+        .then(user => {
+            user.lastSeen = Date.now()
+            user.save()
+        })
+    console.log(req.user)
+    req.logOut()
+    req.flash('success_message', 'You are logged out')
+    res.redirect('/signin')
+}
+
 
 module.exports = {
     userSignupGet,
@@ -198,4 +219,5 @@ module.exports = {
     postForgotPassword,
     getResetPassword,
     postResetPassword,
+    userLogout,
 }
