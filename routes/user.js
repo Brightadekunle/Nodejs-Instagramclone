@@ -4,8 +4,6 @@ const router = express.Router()
 const userControllers = require('../controllers/user')
 const { isAuthenticated } = require('../config/customFunctions')
 
-router.route('/notifications')
-    .get(isLoggedIn, userControllers.getNotification)
 
 router.route('/:username')
     .get(isLoggedIn, userControllers.getProfilePage)
@@ -35,6 +33,8 @@ router.route('/comment/:postId')
 router.route('/reply/:commentId')
     .post(isLoggedIn, userControllers.replyComment)
 
+router.route('/notifications')
+    .get(isLoggedIn, userControllers.getNotification)
 
 
 function isLoggedIn(req, res, next) {

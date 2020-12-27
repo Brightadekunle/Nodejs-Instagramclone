@@ -13,7 +13,7 @@
               <span class="badge badge-secondary" id="message_count" style=""></span>
           </a>
             <% } else { %>
-              <a class="nav-link" href="/notifications">Notifications
+              <a class="nav-link" href="/notifications"><i class="fa fa-bell"></i>Notifications
                 <span class="badge badge-secondary" id="message_count" style=""><%= session.notificationLength %></span>
             </a>
             <% } %>
@@ -25,7 +25,7 @@
             </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <% if (login) { %>
-                  <a class="dropdown-item" href="/<%= logginUser.username %>"></i>User Account</a>
+                  <a class="dropdown-item" href="/<%= logginUser.username %>">User Account</a>
                   <a class="dropdown-item" href="/logout">Logout</a>
                 <% } else { %>
                   <a class="dropdown-item" href="/signup"></i>Signup</a>
